@@ -1,0 +1,19 @@
+{
+  "name": "equalsequals",
+  "version": "0.0.1",
+  "description": "It should be easy to learn how to code.",
+  "main": "controller.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superischroma/equalsequals"
+  },
+  "author": "super",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^7.4.3",
+    "express": "^4.17.1"
+  }
+}
