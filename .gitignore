@@ -78,3 +78,6 @@ typings/
 # Usage files
 config.json
 *.db
+
+# No Journal
+*.docx

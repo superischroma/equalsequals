@@ -3,8 +3,16 @@ const config = require("./config.json");
 const express = require("express");
 const server = express();
 const path = require("path");
+const { User } = require("./internal");
 
 server.get("/", (req, res) => res.sendFile(path.join(__dirname, "web/index.html")));
+server.post("/api/users", (req, res) =>
+{
+    let name = req.query.name;
+    let password = req.query.password;
+    let user = User.create(name, password);
+    res.send(user);
+});
 serveResource("./web/init.js");
 
 server.listen(config.port, config.hostname,
