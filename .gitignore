@@ -81,3 +81,6 @@ config.json
 
 # No Journal
 *.docx
+
+# TS build output
+built/
