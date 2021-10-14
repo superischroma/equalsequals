@@ -1,13 +1,13 @@
-import { FileData, Caching, Identifiable, Snowflake } from "./internal";
+import { FileData, Caching, Identifiable, UUID } from "./internal";
 
 export class User implements Identifiable
 {
-    id: number;
+    id: UUID;
     name: string;
     password: string;
     languages: number[];
 
-    constructor(id: number, name: string, password: string, languages: number[])
+    constructor(id: UUID, name: string, password: string, languages: number[])
     {
         this.id = id;
         this.name = name;
@@ -17,39 +17,34 @@ export class User implements Identifiable
 
     save()
     {
-        if (!FileData.get("SELECT * FROM users WHERE id=?", this.id))
+        if (!FileData.get("SELECT * FROM users WHERE id=?", this.id.buffer()))
         {
             FileData.run("INSERT INTO users (id, name, password, languages) VALUES (?, ?, ?, ?);",
-                this.id, this.name, this.password, Buffer.from(this.languages));
+                this.id.buffer(), this.name, this.password, Buffer.from(this.languages));
         }
         else
         {
             FileData.run("UPDATE users SET name=?, password=?, languages=? WHERE id=?", this.name,
-                this.password, Buffer.from(this.languages), this.id);
+                this.password, Buffer.from(this.languages), this.id.buffer());
         }
     }
 
-    createdAt()
-    {
-        return new Date(Snowflake.getUnixTimestamp(this.id));
-    }
-
-    static retrieve(id: number)
+    static retrieve(id: UUID | string)
     {
         let user;
         if (user = Caching.retrieve(id, User))
             return user;
-        let obj = FileData.get("SELECT * FROM users WHERE id=?", id);
+        let obj = FileData.get("SELECT * FROM users WHERE id=?", new UUID(id).buffer());
         if (!obj)
             return null;
-        user = new User(obj.id, obj.name, obj.password, Array.from(obj.languages.buffer));
+        user = new User(new UUID(obj.id), obj.name, obj.password, Array.from(obj.languages.buffer));
         Caching.cache(user);
         return user;
     }
 
     static async create(name: string, password: string)
     {
-        let user = new User(await Snowflake.generate(), name, password, []);
+        let user = new User(new UUID(), name, password, []);
         user.save();
         return user;
     }

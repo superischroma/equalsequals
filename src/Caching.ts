@@ -1,6 +1,6 @@
-import { User, Identifiable } from "./internal";
+import { User, Identifiable, UUID } from "./internal";
 
-const USER_CACHE: Map<number, User> = new Map();
+const USER_CACHE: Map<UUID, User> = new Map();
 
 export class Caching
 {
@@ -31,10 +31,10 @@ export class Caching
             throw new Error("Attempted to clear cache for an unsupported type");
     }
 
-    static releaseID(id: number, type: any)
+    static releaseID(id: UUID | string, type: any)
     {
         if (type == User)
-            USER_CACHE.delete(id);
+            USER_CACHE.delete(new UUID(id));
         else
             throw new Error("Attempted to release value for an unsupported type");
     }
@@ -47,18 +47,18 @@ export class Caching
             throw new Error("Attempted to release value for an unsupported type");
     }
 
-    static cached(id: number, type: any)
+    static cached(id: UUID | string, type: any)
     {
         if (type == User)
-            return USER_CACHE.has(id);
+            return USER_CACHE.has(new UUID(id));
         else
             throw new Error("Could not retrieve state for an unsupported type");
     }
 
-    static retrieve(id: number, type: any)
+    static retrieve(id: UUID | string, type: any)
     {
         if (type == User)
-            return USER_CACHE.get(id);
+            return USER_CACHE.get(new UUID(id));
         else
             throw new Error("Could not retrieve value for an unsupported type");
     }

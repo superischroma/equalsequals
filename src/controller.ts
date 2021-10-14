@@ -5,6 +5,7 @@ const server = express();
 import { User } from "./internal";
 
 server.get("/", (req, res) => res.end(String(fs.readFileSync("web/index.html"))));
+server.get("/login", (req, res) => res.end(String(fs.readFileSync("web/login.html"))));
 
 server.post("/api/users", async (req, res) =>
 {
